@@ -3,6 +3,15 @@
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell} from "@nextui-org/react";
 import { Todo } from "@/types";
 export const TodosTable = ( { todos } : { todos: Todo[] }) => {
+
+  const TodoRow = (aTodo: Todo) => {
+    return <TableRow key={aTodo.id}>
+              <TableCell>{aTodo.id.slice(0,4)}</TableCell>
+              <TableCell>{aTodo.title}</TableCell>
+              <TableCell>{aTodo.is_done ? "완료" : "미완료"}</TableCell>
+              <TableCell>{`${aTodo.created_at}`}</TableCell>
+          </TableRow>
+  }
   return (
     <Table aria-label="Example static collection table">
       <TableHeader>
@@ -14,12 +23,7 @@ export const TodosTable = ( { todos } : { todos: Todo[] }) => {
       <TableBody emptyContent={"보여줄 데이터가 없습니다."}>
         {
             todos && todos.map((aTodo: Todo) => (
-            <TableRow key={aTodo.id}>
-                <TableCell>{aTodo.id.slice(0,4)}</TableCell>
-                <TableCell>{aTodo.title}</TableCell>
-                <TableCell>{aTodo.is_done ? "완료" : "미완료"}</TableCell>
-                <TableCell>{`${aTodo.created_at}`}</TableCell>
-            </TableRow>
+              TodoRow(aTodo)
             ))
         }
                 

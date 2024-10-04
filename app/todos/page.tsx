@@ -17,6 +17,7 @@ export default async function TodosPage() {
     <div className="flex flex-col space-y-8">
       <h1 className={title()}>Todos</h1>
       { <TodosTable todos= {response.data ?? []}/> }
+    
     </div>
   );
 }

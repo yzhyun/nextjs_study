@@ -7,7 +7,10 @@ import {Table,
         TableRow, 
         TableCell,
         Input,
-        Button
+        Button,
+        Popover,
+        PopoverContent,
+        PopoverTrigger
       } from "@nextui-org/react";
 import { Todo } from "@/types";
 import { useState } from "react";
@@ -16,20 +19,41 @@ export const TodosTable = ( { todos } : { todos: Todo[] }) => {
   const [todoAddEnable, setTodoAddEnable] = useState(false);
   //입력된 할일
   const [newTodoInput, setNewTodoInput] = useState('');
+  
+  const DisabledTodoAddButton = () => {
+    return <Popover placement="top" showArrow={true}>
+      <PopoverTrigger>
+        <Button color="default" className="h-14">
+          추가
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <div className="px-1 py-2">
+          <div className="text-small font-bold">😍</div>
+          <div className="text-tiny">할 일을 입력해주세요!</div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  }
+
   return (
     <>
     <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-      <Input type="email" label="새로운 할일" value={newTodoInput}/>
+      <Input type="text" label="새로운 할일" 
+        value={newTodoInput}
+        onValueChange={(changedInput) => {
+          setNewTodoInput(changedInput);
+          setTodoAddEnable(changedInput.length > 0);
+        }}/>
       {
         todoAddEnable ? 
           <Button color="warning" className="h-14">
-          </Button>:
-          <Button color="default" className="h-14">
-          </Button>
+            추가
+          </Button>: DisabledTodoAddButton()
+
+            
       }
-      <Button color="warning" className="h-14">
-        추가
-      </Button>
+      
 
     </div>
 

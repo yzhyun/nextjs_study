@@ -20,6 +20,21 @@ export const TodosTable = ( { todos } : { todos: Todo[] }) => {
   //입력된 할일
   const [newTodoInput, setNewTodoInput] = useState('');
   
+  const addATodoHandler = async () => {
+    if (newTodoInput.length < 1){
+      console.log('글자를 입력하세요');
+      return
+    }
+    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/todos/`, {
+     method: 'post',
+     body: JSON.stringify({
+      title: newTodoInput
+     }),
+     cache: 'no-store'
+    });
+    console.log(`할일 추가완료 : ${newTodoInput}`)
+  }
+
   const DisabledTodoAddButton = () => {
     return <Popover placement="top" showArrow={true}>
       <PopoverTrigger>
@@ -47,11 +62,14 @@ export const TodosTable = ( { todos } : { todos: Todo[] }) => {
         }}/>
       {
         todoAddEnable ? 
-          <Button color="warning" className="h-14">
+          <Button color="warning" className="h-14"
+            onPress={ async () => {
+              await addATodoHandler();
+            }}
+          >
             추가
           </Button>: DisabledTodoAddButton()
-
-            
+     
       }
       
 

@@ -10,30 +10,42 @@ import {Table,
         Button,
         Popover,
         PopoverContent,
-        PopoverTrigger
+        PopoverTrigger,
+        Spinner
       } from "@nextui-org/react";
 import { Todo } from "@/types";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 export const TodosTable = ( { todos } : { todos: Todo[] }) => {
   //할일 추가 가능 여부
   const [todoAddEnable, setTodoAddEnable] = useState(false);
   //입력된 할일
   const [newTodoInput, setNewTodoInput] = useState('');
-  
-  const addATodoHandler = async () => {
-    if (newTodoInput.length < 1){
-      console.log('글자를 입력하세요');
-      return
-    }
-    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/todos/`, {
+  //로딩 상태
+  const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
+
+  const addATodoHandler = async (title: string) => {
+    console.log(newTodoInput);
+    
+    if (!todoAddEnable) { return };
+    setIsLoading(true);
+
+    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/todos`, {
      method: 'post',
      body: JSON.stringify({
-      title: newTodoInput
+      title: title
      }),
      cache: 'no-store'
     });
+    setNewTodoInput('');
+    router.refresh();
+    setIsLoading(false);
+    setTodoAddEnable(false);
     console.log(`할일 추가완료 : ${newTodoInput}`)
-  }
+  };
+
 
   const DisabledTodoAddButton = () => {
     return <Popover placement="top" showArrow={true}>
@@ -52,7 +64,7 @@ export const TodosTable = ( { todos } : { todos: Todo[] }) => {
   }
 
   return (
-    <>
+    <div className="flex flex-col space-y-2">
     <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
       <Input type="text" label="새로운 할일" 
         value={newTodoInput}
@@ -64,7 +76,7 @@ export const TodosTable = ( { todos } : { todos: Todo[] }) => {
         todoAddEnable ? 
           <Button color="warning" className="h-14"
             onPress={ async () => {
-              await addATodoHandler();
+              await addATodoHandler(newTodoInput)
             }}
           >
             추가
@@ -74,7 +86,8 @@ export const TodosTable = ( { todos } : { todos: Todo[] }) => {
       
 
     </div>
-
+    <div className="h-6">{isLoading && <Spinner size="sm" color="warning"/>}</div>
+    
     <Table aria-label="Example static collection table">
       <TableHeader>
         <TableColumn>아이디</TableColumn>
@@ -96,7 +109,7 @@ export const TodosTable = ( { todos } : { todos: Todo[] }) => {
                 
       </TableBody>
     </Table>
-    </>
+    </div>
   );
 }
 

@@ -27,11 +27,11 @@ export const TodosTable = ( { todos } : { todos: Todo[] }) => {
   const router = useRouter();
 
   const addATodoHandler = async (title: string) => {
-    console.log(newTodoInput);
     
     if (!todoAddEnable) { return };
+    
     setIsLoading(true);
-
+    await new Promise(f => setTimeout(f, 1000));
     await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/todos`, {
      method: 'post',
      body: JSON.stringify({
@@ -80,7 +80,7 @@ export const TodosTable = ( { todos } : { todos: Todo[] }) => {
             }}
           >
             추가
-          </Button>: DisabledTodoAddButton()
+          </Button>:DisabledTodoAddButton()
      
       }
       

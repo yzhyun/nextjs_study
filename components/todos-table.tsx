@@ -16,6 +16,11 @@ import {Table,
 import { Todo } from "@/types";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import React from 'react';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export const TodosTable = ( { todos } : { todos: Todo[] }) => {
   //할일 추가 가능 여부
   const [todoAddEnable, setTodoAddEnable] = useState(false);
@@ -27,11 +32,10 @@ export const TodosTable = ( { todos } : { todos: Todo[] }) => {
   const router = useRouter();
 
   const addATodoHandler = async (title: string) => {
-    
     if (!todoAddEnable) { return };
     
     setIsLoading(true);
-    await new Promise(f => setTimeout(f, 1000));
+    await new Promise(f => setTimeout(f, 500));
     await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/todos`, {
      method: 'post',
      body: JSON.stringify({
@@ -39,11 +43,13 @@ export const TodosTable = ( { todos } : { todos: Todo[] }) => {
      }),
      cache: 'no-store'
     });
+    console.log(`할일 추가완료 :`)
+
     setNewTodoInput('');
     router.refresh();
     setIsLoading(false);
     setTodoAddEnable(false);
-    console.log(`할일 추가완료 : ${newTodoInput}`)
+    notifyTodoAddedEvent("할일 추가 성공!!");
   };
 
 
@@ -63,19 +69,41 @@ export const TodosTable = ( { todos } : { todos: Todo[] }) => {
     </Popover>
   }
 
+  const notifyTodoAddedEvent = (msg: string) => toast.success(msg);
+
   return (
     <div className="flex flex-col space-y-2">
+    <ToastContainer
+      position="top-right"
+      autoClose={1800}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="dark"
+    />   
     <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
       <Input type="text" label="새로운 할일" 
         value={newTodoInput}
         onValueChange={(changedInput) => {
           setNewTodoInput(changedInput);
           setTodoAddEnable(changedInput.length > 0);
-        }}/>
+        }}
+        onKeyDown={ async (event) => {
+          if (event.key === 'Enter') { // 엔터 키를 감지
+            event.preventDefault(); // 기본 동작 방지
+            await addATodoHandler(newTodoInput);
+          }
+        }}
+        />
       {
         todoAddEnable ? 
           <Button color="warning" className="h-14"
-            onPress={ async () => {
+            onClick={ async () => {
+              console.log("===========onPress")
               await addATodoHandler(newTodoInput)
             }}
           >

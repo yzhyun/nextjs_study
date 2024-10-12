@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { 
-    getFirestore, collection, getDocs, getDoc, setDoc, doc, Timestamp, deleteDoc, updateDoc
+    getFirestore, collection, getDocs, getDoc, setDoc, doc, Timestamp, deleteDoc, updateDoc, orderBy, query
 } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -28,12 +28,12 @@ try {
 
 // 모든 할일 가져오기 
 export async function fetchTodos() {
+    const todosRef = collection(db, "todos");
+    const descQuery = query(todosRef, orderBy("created_at", "desc"));
+
     let querySnapshot = null;
     try {
-        console.log("==================getDocs START=====================")
-        querySnapshot = await getDocs(collection(db, "todos"));
-        // console.log(querySnapshot.data());
-        console.log("==================getDocs GETDOC=====================")
+        querySnapshot = await getDocs(descQuery);
 
         if (querySnapshot.empty) {
             return [];
@@ -63,7 +63,6 @@ export async function fetchTodos() {
 
 // 할일 추가
 export async function addATodo( {title} ) {
-    console.log("할일추가 =====")
     const newTodoRef = doc(collection(db, "todos"));
     const createdAtTimestamp = Timestamp.fromDate(new Date());
     const newTodoData = {

@@ -1,3 +1,5 @@
+"use client";
+
 import { Link } from "@nextui-org/link";
 import { Snippet } from "@nextui-org/snippet";
 import { Code } from "@nextui-org/code";
@@ -5,51 +7,40 @@ import { button as buttonStyles } from "@nextui-org/theme";
 
 import { siteConfig } from "@/config/site";
 import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
+import { useRouter } from 'next/router';
+import {Select, SelectItem} from "@nextui-org/react";
+import {Trsmsg} from "@/data/trsmsg";
+import Form from "@/components/trsmsg-form";
+
+import React, { useState } from 'react';
 
 export default function Home() {
+  const [value, setValue] = React.useState("");
+
+  const handleSelectionChange = (e: any) => {
+    setValue(e.target.value);
+  };
+
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       <div className="inline-block max-w-xl text-center justify-center">
-        <h1 className={title()}>Make&nbsp;</h1>
-        <h1 className={title({ color: "violet" })}>beautiful&nbsp;</h1>
+        <h1 className={title({color: "violet"})}>CJ ONE POINT &nbsp;</h1>        
         <br />
         <h1 className={title()}>
-          websites regardless of your design experience.
+          테스트할 전문을 선택하세요.
         </h1>
         <h2 className={subtitle({ class: "mt-4" })}>
-          Beautiful, fast and modern React UI library.
         </h2>
-      </div>
-
-      <div className="flex gap-3">
-        <Link
-          isExternal
-          className={buttonStyles({
-            color: "primary",
-            radius: "full",
-            variant: "shadow",
-          })}
-          href={siteConfig.links.docs}
-        >
-          Documentation
-        </Link>
-        <Link
-          isExternal
-          className={buttonStyles({ variant: "bordered", radius: "full" })}
-          href={siteConfig.links.github}
-        >
-          <GithubIcon size={20} />
-          GitHub
-        </Link>
-      </div>
-
-      <div className="mt-8">
-        <Snippet hideCopyButton hideSymbol variant="bordered">
-          <span>
-            Get started by editing <Code color="primary">app/page.tsx</Code>
-          </span>
-        </Snippet>
+        <br />        
+        <Select label="Select a trsmsg" className="max-w-xs" onChange={handleSelectionChange}>
+          {Trsmsg.map((Trsmsg) => (
+            <SelectItem key={Trsmsg.key}>
+              {Trsmsg.label}
+            </SelectItem>
+          ))}
+        </Select> 
+        
+        {value && <Form selectedValue={value} />} {/* Content 컴포넌트 사용 */}
       </div>
     </section>
   );

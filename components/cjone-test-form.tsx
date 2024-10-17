@@ -58,7 +58,29 @@ const SendForm = ({ trsMsgCd }: { trsMsgCd: string }) => {
   };
 
   const CnclForm = () => {
-    
+
+    return (
+      <div className="flex flex-col">
+      <div className="mb-2">데이터부</div> {/* 상단 명칭 */}          
+        {formBodyData.map((data: string[], index: number) => (
+          <div key={index} className="mb-2">
+            <Input
+              labelPlacement="inside" placeholder="" label={data[4]}
+              size="sm"
+              type="text"
+              value={data[0]} // 첫 번째 값을 value로 사용
+              name={`i_${index + 1}`} // name을 i_1, i_2, ... 형식으로 지정
+              className="border border-gray-300 rounded-md p-2"
+              onChange={(e) => {
+                const newFormData = [...formBodyData];
+                newFormData[index][0] = e.target.value; // 입력값을 상태에 반영
+                setFormBodyData(newFormData);
+              }}
+            />
+          </div>
+        ))}
+      </div>   
+    )
   }
 
 
@@ -112,29 +134,10 @@ const SendForm = ({ trsMsgCd }: { trsMsgCd: string }) => {
                 />
               </div>
             ))}
-          </div>
-          {/* 첫 번째 컬럼 */}
-          <div className="flex flex-col">
-            <div className="mb-2">공통부</div> {/* 상단 명칭 */}
-              {formCommData.map((data: string[], index: number) => (
-                <div key={index} className="mb-2">
-                  <Input
-                    labelPlacement="inside" placeholder="" label={data[4]}
-                    size="sm"
-                    type="text"
-                    value={data[0]} // 첫 번째 값을 value로 사용
-                    name={`c_${index + 1}`} // name을 i_1, i_2, ... 형식으로 지정
-                    className="border border-gray-300 rounded-md p-2"
-                    onChange={(e) => {
-                      const newFormData = [...formCommData];
-                      newFormData[index][0] = e.target.value; // 입력값을 상태에 반영
-                      setFormCommData(newFormData);
-                    }}
-                  />
-                </div>
-              ))}          
-          </div>                     
-        </div>        
+          </div> 
+          <CnclForm />        
+        </div>
+        
       </form>
       
     </>

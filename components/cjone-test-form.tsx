@@ -2,7 +2,7 @@
 import { select } from '@nextui-org/theme';
 import {Input, Spinner, Button, ButtonGroup} from "@nextui-org/react";
 import React, { useEffect, useState } from 'react';
-import {Trsmsg, getTrsmsgForm, getCommData, reqTrsmsg, sendTrsmsg} from "@/data/trsmsg";
+import {Trsmsg, getTrsmsgForm, reqTrsmsg, sendTrsmsg} from "@/data/trsmsg";
 import { stringify } from 'querystring';
 import { request } from 'http';
 

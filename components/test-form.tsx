@@ -3,30 +3,45 @@ import { select } from "@nextui-org/theme";
 import { Input, Spinner, Button, ButtonGroup, Textarea } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { form300, getTrsmsgForm, reqTrsmsg, sendTrsmsg } from "@/data/trsmsg";
+import { request } from "http";
 
 interface FormProps {
   trsMsgCd: string;
 }
 
 
-
 const SendForm = ({ trsMsgCd }: { trsMsgCd: string }) => {
   const [windowMessage, setWindowMessage] = useState("");
+  const [sendSucc, setSendSucc] = useState(false);
+  const [formRsltData, setFormRsltData] = useState<string[][]>([]); // 배열로 상태 관리
+
+  const sendTrsmsgHandler = async (title: string, requestData: any) => {    
+    console.log("================> " + requestData.toString);
+    const rtn =  trsMsgCd ? await sendTrsmsg(trsMsgCd, requestData) : []; // 데이터를 비동기적으로 가져오기
+    setFormRsltData(rtn.data)
+  }
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault(); // 페이지 새로고침 방지
     const formData = new FormData(e.currentTarget); // 폼 데이터 객체 생성
     const data = Object.fromEntries(formData); // 객체로 변환
+    
     console.log(data);
     //aaaa
+    //서버로 요청 진행
+    //전문 요청 
+    sendTrsmsgHandler("400", data)   
+    
+    //응답코드 확인 후 응답 코드가 000 맞으면
+    setSendSucc(true);
+
     setWindowMessage(JSON.stringify(data, null, 2))
   }
   return (
     <>
-      <form onSubmit={handleSubmit}>  
+      <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2 w-full">
           <Textarea
-          
             label="요청데이터와 결과데이터를 확인하세요."
             labelPlacement="inside"
             // placeholder="요청데이터와 결과데이터를 확인하세요."
@@ -68,18 +83,21 @@ const SendForm = ({ trsMsgCd }: { trsMsgCd: string }) => {
                     className="w-full gap-1 mb-1 pb-1"
                   />
                 ))}
-            </div>
+            </div>            
             <div className="flex-row w-full flex-wrap mb-4 pb-1 gap-2">
               {Array(form300.colNum[2])
                 .fill(null)
                 .map((_, index) => (
                   <Input
                     key={index}
+                    id={"r_" + (index + 1)}
+                    name={"r_" + (index + 1)}
                     type="text"
                     labelPlacement="inside"
                     label={form300.colResNames[index]}
                     color="default"
                     className="w-full gap-1 mb-1 pb-1"
+                    value={formRsltData[index] ? formRsltData[index][0] : ''}
                   />
                 ))}
             </div>

@@ -141,13 +141,14 @@ export const getTrsmsgForm = async (trsMsgCd) => {
     cache: 'no-store'
   });
   const data = response.json();
-  console.log("[" + trsMsgCd + "]" + "포맷 조회 데이터 성공.");
+  console.log("[" + trsMsgCd + "]" + "조회 데이터 성공");
   console.log(data);
   return data;
 };
 
 export const sendTrsmsg = async (trsMsgCd, requestData) => {
   console.log("getTrsmsgForm======");
+  console.log(requestData)
   console.log("http://localhost:8080/reqTR" + trsMsgCd);
 
   const response = await fetch("http://localhost:8080/reqTR" + trsMsgCd, {

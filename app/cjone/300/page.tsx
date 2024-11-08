@@ -1,5 +1,5 @@
 import { title, subtitle } from "@/components/primitives";
-import Form from "@/components/test-form"; 
+import Form from "@/components/trsmsg-form/300"; 
 
 export default function test() {
   return (
